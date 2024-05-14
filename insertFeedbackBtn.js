@@ -94,7 +94,8 @@ function insertFeedback() {
             index +
             ". ";
           feedback += requirement.description;
-          feedback += `&emsp;<em> → ${requirement.message}</em>
+          feedback += `
+          &emsp;<em> → ${requirement.error}</em>
           `;
           markToDeduct += Number(requirement.number);
         } else {
@@ -112,22 +113,26 @@ function insertFeedback() {
 
               if (!requirement[subReq].correct) {
                 feedback += `
-                  &emsp;<em>→ ${
-                    requirement[subReq].message
-                      ? requirement[subReq].message
-                      : `Not Okay.`
-                  }</em> `;
+                👉 ${requirement[subReq].description} <em> → ${
+                  requirement[subReq].error
+                    ? requirement[subReq].error
+                    : `Not Okay.`
+                }</em> `;
                 markToDeduct += Number(requirement[subReq].number);
                 allSubReqOk = false;
               } else {
                 feedback += `
-                         ${
-                           requirement[subReq].description
-                             ? requirement[subReq].description + "- Okay."
-                             : `Okay.`
-                         }`;
+                👉 ${requirement[subReq].description} → ${
+                  requirement[subReq].message
+                    ? requirement[subReq].message
+                    : `Okay.`
+                }`;
               }
             }
+          }
+          if (allSubReqOk) {
+            feedback += `
+            → ${requirement.message ? requirement.message : `Okay.`}`;
           }
           feedback += `
           `;
@@ -142,21 +147,29 @@ function insertFeedback() {
         if (requirement.correct) {
           if (requirement.number == 0) {
             // feedback += `দারুন হয়েছে।`;
-            feedback += ` - Okay. 
+            feedback += ` - ${
+              requirement[subReq].message
+                ? requirement[subReq].message
+                : `Okay.`
+            } 
                           `;
           } else {
-            feedback += ` - Okay. 
+            feedback += ` - ${
+              requirement[subReq].message
+                ? requirement[subReq].message
+                : `Okay.`
+            } 
                           `;
           }
         } else {
           if (requirement.number == 0) {
             // feedback += `অপশনাল পার্টটুকু করার চেষ্টা করবেন। তাহলে আপনার প্রজেক্ট অন্যদের তুলনায় আরো ইউনিক হয়ে উঠবে।`;
             feedback += ` 
-&emsp;<em> → ${requirement.message}</em>
+&emsp;<em> → ${requirement.error}</em>
                           `;
           } else {
             feedback += ` 
-&emsp;<em> → ${requirement.message}</em>
+&emsp;<em> → ${requirement.error}</em>
                           `;
             markToDeduct += Number(requirement.number);
           }
@@ -181,7 +194,7 @@ function insertFeedback() {
 
   feedback += `
         
-<strong>Examiner Feedback:</strong> ${getFeedBack(obtainedMark)}
+<strong>Examiner Feedback:</strong> ${getFeedBack(60 - markToDeduct)}
 <br />
 <strong>Important Instructions:</strong>
   → Do not post on Facebook, if you have any marks-related issues.
