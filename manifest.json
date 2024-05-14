@@ -1,0 +1,31 @@
+{
+  "name": "Apollo",
+  "description": "Apollo is a chrome extension that helps you to give feedback to your students on their code.",
+  "version": "0.02",
+  "permissions": ["activeTab"],
+  "browser_action": {
+    "default_icon": "apollo.png",
+    "default_popup": "index.html"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.programming-hero.com/*",
+        "*://*.netlify.app/*",
+        "*://github.com/*",
+        "*://*.github.io/*"
+      ],
+      "js": [
+        "app.js",
+        "json.js",
+        "showSetRequirement.js",
+        "showFeedbackReq.js",
+        "localStorage.js",
+        "preset.js",
+        "insertFeedbackBtn.js",
+        "addReq.js"
+      ]
+    }
+  ],
+  "manifest_version": 2
+}
