@@ -1,11 +1,16 @@
 {
   "name": "Apollo",
   "description": "Apollo is a chrome extension that helps you to give feedback to your students on their code.",
-  "version": "0.02",
+  "version": "0.05",
   "permissions": ["activeTab"],
-  "browser_action": {
-    "default_icon": "apollo.png",
+  "action": {
     "default_popup": "index.html"
+  },
+  "icons": {
+    "16": "ph.png",
+    "32": "ph.png",
+    "48": "ph.png",
+    "128": "ph.png"
   },
   "content_scripts": [
     {
@@ -27,5 +32,5 @@
       ]
     }
   ],
-  "manifest_version": 2
+  "manifest_version": 3
 }

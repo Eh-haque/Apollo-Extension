@@ -102,11 +102,11 @@ function getFeedBack(num) {
   }
 }
 
-obtainedMark >= 55
-  ? FB_Text.good
-  : obtainedMark >= 50 && obtainedMark < 55
-  ? FB_Text.avarage
-  : obtainedMark >= 50 && obtainedMark < 55;
+// obtainedMark >= 55
+//   ? FB_Text.good
+//   : obtainedMark >= 50 && obtainedMark < 55
+//   ? FB_Text.avarage
+//   : obtainedMark >= 50 && obtainedMark < 55;
 
 function insertFeedback() {
   let markToDeduct = 0;
