@@ -236,11 +236,8 @@ function insertFeedback() {
   → Make sure to read all the requirements carefully, If you have any marks-related confusion.
   → If you are confident and If there is a mistake from the examiner's end, give a recheck request.
   → If your recheck reason was not valid, 2 marks will be deducted from your current marks.
-  → Please check the documentation below for more information about how to recheck.
 <br/>
-<strong>Documentation:</strong>
-How to Recheck: https://1drv.ms/b/s!AsHwkj6t2abplhxnqigzCy2IwmLu?e=4JeV37
-<br/>
+
 <strong>Let's Code_ Your Career</strong>
         `;
 
