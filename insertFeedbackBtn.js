@@ -117,34 +117,39 @@ function insertFeedback() {
   for (const section in loadFeedback) {
     feedback +=
       `
-` + `<strong># ${section}</strong>`;
+    ` + `<strong># ${section}</strong>`;
     for (const req in loadFeedback[section]) {
       const requirement = loadFeedback[section][req];
 
-      if (Object.keys(loadFeedback[section][req]).length > 4) {
+      console.log("target", loadFeedback[section][req]);
+      console.log("target-2", Object.keys(loadFeedback[section][req]).length);
+
+      if (Object.keys(loadFeedback[section][req]).length >= 3) {
         if (!requirement.correct) {
           feedback +=
             `
-` +
+          ` +
             index +
             ". ";
           feedback += requirement.description;
           feedback += `
-          &emsp;<em> → ${requirement.error}</em>
+          &emsp;<em> → ${
+            requirement.error ? requirement.error : "Not Okay"
+          }</em>
           `;
           markToDeduct += Number(requirement.number);
         } else {
           let allSubReqOk = true;
           feedback +=
             `
-` +
+          ` +
             index +
             ". ";
           feedback += requirement.description;
 
           for (const subReq in loadFeedback[section][req]) {
             if (subReq.includes("sub_req_")) {
-              console.log(subReq, loadFeedback[section][req][subReq]);
+              // console.log(subReq, loadFeedback[section][req][subReq]);
 
               if (!requirement[subReq].correct) {
                 feedback += `
@@ -175,7 +180,7 @@ function insertFeedback() {
       } else {
         feedback +=
           `
-` +
+          ` +
           index +
           ". ";
         feedback += requirement.description;
@@ -183,14 +188,14 @@ function insertFeedback() {
           if (requirement.number == 0) {
             // feedback += `দারুন হয়েছে।`;
             feedback += ` - ${
-              requirement[subReq].message
+              requirement[subReq]?.message
                 ? requirement[subReq].message
                 : `Okay.`
             } 
                           `;
           } else {
             feedback += ` - ${
-              requirement[subReq].message
+              requirement[subReq]?.message
                 ? requirement[subReq].message
                 : `Okay.`
             } 
@@ -200,11 +205,11 @@ function insertFeedback() {
           if (requirement.number == 0) {
             // feedback += `অপশনাল পার্টটুকু করার চেষ্টা করবেন। তাহলে আপনার প্রজেক্ট অন্যদের তুলনায় আরো ইউনিক হয়ে উঠবে।`;
             feedback += ` 
-&emsp;<em> → ${requirement.error}</em>
+            &emsp;<em> → ${requirement.error}</em>
                           `;
           } else {
             feedback += ` 
-&emsp;<em> → ${requirement.error}</em>
+          &emsp;<em> → ${requirement.error}</em>
                           `;
             markToDeduct += Number(requirement.number);
           }
@@ -225,7 +230,7 @@ function insertFeedback() {
     obtainedMark = Math.ceil(30 - markToDeduct / 2);
   }
 
-  console.log(feedback, markToDeduct, obtainedMark);
+  // console.log(feedback, markToDeduct, obtainedMark);
 
   feedback += `
         
