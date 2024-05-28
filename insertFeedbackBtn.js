@@ -121,8 +121,8 @@ function insertFeedback() {
     for (const req in loadFeedback[section]) {
       const requirement = loadFeedback[section][req];
 
-      console.log("target", loadFeedback[section][req]);
-      console.log("target-2", Object.keys(loadFeedback[section][req]).length);
+      // console.log("target", loadFeedback[section][req]);
+      // console.log("target-2", Object.keys(loadFeedback[section][req]).length);
 
       if (Object.keys(loadFeedback[section][req]).length >= 3) {
         if (!requirement.correct) {
