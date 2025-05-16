@@ -110,131 +110,77 @@ function getFeedBack(num) {
 
 function insertFeedback() {
   let markToDeduct = 0;
-
-  let feedback = "";
   let index = 1;
-  // console.log(loadFeedback)
+  const feedbackLines = [];
+
+  // Helper to process sub-requirements
+  function processSubRequirements(requirement) {
+    const subKeys = Object.keys(requirement).filter((k) =>
+      k.includes("sub_req_")
+    );
+    let allSubOk = true;
+    for (const subKey of subKeys) {
+      const sub = requirement[subKey];
+      if (!sub.correct) {
+        markToDeduct += Number(sub.number);
+        allSubOk = false;
+        feedbackLines.push(
+          `👉 ${sub.description} <em> → ${sub.error || "Not Okay."}</em>`
+        );
+      } else {
+        feedbackLines.push(`👉 ${sub.description} → ${sub.message || "Okay."}`);
+      }
+    }
+    return allSubOk;
+  }
+
+  // Helper to process a single requirement (with/without sub-reqs)
+  function processRequirement(requirement) {
+    const subKeys = Object.keys(requirement).filter((k) =>
+      k.includes("sub_req_")
+    );
+    feedbackLines.push(`${index}. ${requirement.description}`);
+    if (subKeys.length > 0) {
+      // Has sub-requirements
+      let allSubOk = processSubRequirements(requirement);
+      if (allSubOk) {
+        feedbackLines.push(`→ ${requirement.message || "Okay."}`);
+      }
+    } else {
+      // No sub-requirements
+      if (!requirement.correct) {
+        markToDeduct += Number(requirement.number);
+        feedbackLines.push(
+          `&emsp;<em> → ${requirement.error || "Not Okay"}</em>`
+        );
+      } else {
+        feedbackLines.push(` - ${requirement.message || "Okay."}`);
+      }
+    }
+    index++;
+  }
+
   for (const section in loadFeedback) {
-    feedback +=
-      `
-    ` + `<strong># ${section}</strong>`;
+    feedbackLines.push(`<strong># ${section}</strong>`);
     for (const req in loadFeedback[section]) {
       const requirement = loadFeedback[section][req];
-
-      // console.log("target", loadFeedback[section][req]);
-      // console.log("target-2", Object.keys(loadFeedback[section][req]).length);
-
-      if (Object.keys(loadFeedback[section][req]).length >= 3) {
-        if (!requirement.correct) {
-          feedback +=
-            `
-          ` +
-            index +
-            ". ";
-          feedback += requirement.description;
-          feedback += `
-          &emsp;<em> → ${
-            requirement.error ? requirement.error : "Not Okay"
-          }</em>
-          `;
-          markToDeduct += Number(requirement.number);
-        } else {
-          let allSubReqOk = true;
-          feedback +=
-            `
-          ` +
-            index +
-            ". ";
-          feedback += requirement.description;
-
-          for (const subReq in loadFeedback[section][req]) {
-            if (subReq.includes("sub_req_")) {
-              // console.log(subReq, loadFeedback[section][req][subReq]);
-
-              if (!requirement[subReq].correct) {
-                feedback += `
-                👉 ${requirement[subReq].description} <em> → ${
-                  requirement[subReq].error
-                    ? requirement[subReq].error
-                    : `Not Okay.`
-                }</em> `;
-                markToDeduct += Number(requirement[subReq].number);
-                allSubReqOk = false;
-              } else {
-                feedback += `
-                👉 ${requirement[subReq].description} → ${
-                  requirement[subReq].message
-                    ? requirement[subReq].message
-                    : `Okay.`
-                }`;
-              }
-            }
-          }
-          if (allSubReqOk) {
-            feedback += `
-            → ${requirement.message ? requirement.message : `Okay.`}`;
-          }
-          feedback += `
-          `;
-        }
-      } else {
-        feedback +=
-          `
-          ` +
-          index +
-          ". ";
-        feedback += requirement.description;
-        if (requirement.correct) {
-          if (requirement.number == 0) {
-            // feedback += `দারুন হয়েছে।`;
-            feedback += ` - ${
-              requirement[subReq]?.message
-                ? requirement[subReq].message
-                : `Okay.`
-            } 
-                          `;
-          } else {
-            feedback += ` - ${
-              requirement[subReq]?.message
-                ? requirement[subReq].message
-                : `Okay.`
-            } 
-                          `;
-          }
-        } else {
-          if (requirement.number == 0) {
-            // feedback += `অপশনাল পার্টটুকু করার চেষ্টা করবেন। তাহলে আপনার প্রজেক্ট অন্যদের তুলনায় আরো ইউনিক হয়ে উঠবে।`;
-            feedback += ` 
-            &emsp;<em> → ${requirement.error}</em>
-                          `;
-          } else {
-            feedback += ` 
-          &emsp;<em> → ${requirement.error}</em>
-                          `;
-            markToDeduct += Number(requirement.number);
-          }
-        }
-      }
-      index++;
+      processRequirement(requirement);
     }
   }
 
   const totalMark =
     Number(document.querySelector(".font-weight-bold.pl-2")?.innerText) || 60;
   let obtainedMark = 0;
-  if (totalMark == 60) {
+  if (totalMark === 60) {
     obtainedMark = 60 - markToDeduct;
-  } else if (totalMark == 50) {
+  } else if (totalMark === 50) {
     obtainedMark = Math.ceil(50 - (markToDeduct * 50) / 60);
   } else {
     obtainedMark = Math.ceil(30 - markToDeduct / 2);
   }
 
-  // console.log(feedback, markToDeduct, obtainedMark);
-
-  feedback += `
-        
-<strong>Examiner Feedback:</strong> ${getFeedBack(60 - markToDeduct)}
+  feedbackLines.push(`
+<strong>Examiner Feedback:</strong> ${getFeedBack(obtainedMark)}
 <br />
 <strong>Important Instructions:</strong>
   → Do not post on Facebook, if you have any marks-related issues.
@@ -242,29 +188,23 @@ function insertFeedback() {
   → If you are confident and If there is a mistake from the examiner's end, give a recheck request.
   → If your recheck reason was not valid, 2 marks will be deducted from your current marks.
 <br/>
-
 <strong>Let's Code_ Your Career</strong>
-        `;
+  `);
 
   const textArea = document.querySelector(".ql-editor p");
-  textArea.innerHTML = feedback;
+  textArea.innerHTML = feedbackLines.join("\n");
 
   const markBox = document.getElementById("Mark");
-  // markBox.value = obtainedMark;
   const allP = document.getElementsByClassName("markSuggestions");
-
   for (const p of allP) {
     markBox.parentNode.removeChild(p);
   }
 
   const markSuggestion = document.createElement("p");
-  // markSuggestion.setAttribute("class", "markSuggestions");
   markSuggestion.className = "m-2 w-50 markSuggestions";
   markSuggestion.innerText = `${obtainedMark} ?`;
-
   markBox.after(markSuggestion);
 
-  // hide all feedback
   showReqToogleBox = !showReqToogleBox;
   showFeedbackReq(true);
 }
